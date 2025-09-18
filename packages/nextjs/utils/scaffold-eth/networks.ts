@@ -90,6 +90,9 @@ export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
   [chains.celoSepolia.id]: {
     color: "#476520",
   },
+  [13579]: {
+    color: "#8B5CF6", // Purple color for Intuition Testnet
+  },
 };
 
 /**

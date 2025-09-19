@@ -78,6 +78,10 @@ contract MemeLaunchpad {
         return allTokens.length;
     }
 
+    function getAllTokens() external view returns (TokenInfo[] memory) {
+        return allTokens;
+    }
+
     function tokensOf(address creator) external view returns (address[] memory) {
         return tokensByCreator[creator];
     }

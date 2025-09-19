@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   13579: {
     MemeLaunchpad: {
-      address: "0xb543694a9a6A01C1Bd16fad4BB660B0E2e9CB7dD",
+      address: "0x085EA49DC60F1f237D01c69b01Ed3fa296d36d1d",
       abi: [
         {
           anonymous: false,
@@ -123,6 +123,11 @@ const deployedContracts = {
               name: "timestamp",
               type: "uint256",
             },
+            {
+              internalType: "string",
+              name: "imageURI",
+              type: "string",
+            },
           ],
           stateMutability: "view",
           type: "function",
@@ -166,6 +171,11 @@ const deployedContracts = {
               internalType: "address",
               name: "feeCollector",
               type: "address",
+            },
+            {
+              internalType: "string",
+              name: "imageURI",
+              type: "string",
             },
           ],
           name: "createMemeToken",
@@ -214,6 +224,11 @@ const deployedContracts = {
                   internalType: "uint256",
                   name: "timestamp",
                   type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "imageURI",
+                  type: "string",
                 },
               ],
               internalType: "struct MemeLaunchpad.TokenInfo[]",
@@ -303,308 +318,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 5428558,
-    },
-  },
-  31337: {
-    MemeLaunchpad: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      abi: [
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "locker",
-              type: "address",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "lpToken",
-              type: "address",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "beneficiary",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "LiquidityLocked",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "creator",
-              type: "address",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "token",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "symbol",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "supply",
-              type: "uint256",
-            },
-          ],
-          name: "TokenCreated",
-          type: "event",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "allTokens",
-          outputs: [
-            {
-              internalType: "address",
-              name: "token",
-              type: "address",
-            },
-            {
-              internalType: "address",
-              name: "creator",
-              type: "address",
-            },
-            {
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "symbol",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "supply",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "timestamp",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "allTokensLength",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "name_",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "symbol_",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "initialSupply",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "feeBasisPoints",
-              type: "uint256",
-            },
-            {
-              internalType: "address",
-              name: "feeCollector",
-              type: "address",
-            },
-          ],
-          name: "createMemeToken",
-          outputs: [
-            {
-              internalType: "address",
-              name: "token",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "getAllTokens",
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: "address",
-                  name: "token",
-                  type: "address",
-                },
-                {
-                  internalType: "address",
-                  name: "creator",
-                  type: "address",
-                },
-                {
-                  internalType: "string",
-                  name: "name",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "symbol",
-                  type: "string",
-                },
-                {
-                  internalType: "uint256",
-                  name: "supply",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
-              ],
-              internalType: "struct MemeLaunchpad.TokenInfo[]",
-              name: "",
-              type: "tuple[]",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "lpToken",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "address",
-              name: "beneficiary",
-              type: "address",
-            },
-          ],
-          name: "lockLiquidity",
-          outputs: [
-            {
-              internalType: "address",
-              name: "locker",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "tokensByCreator",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "creator",
-              type: "address",
-            },
-          ],
-          name: "tokensOf",
-          outputs: [
-            {
-              internalType: "address[]",
-              name: "",
-              type: "address[]",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-      ],
-      inheritedFunctions: {},
-      deployedOnBlock: 1,
+      deployedOnBlock: 5430821,
     },
   },
 } as const;

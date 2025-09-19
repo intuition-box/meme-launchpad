@@ -13,6 +13,7 @@ contract MemeLaunchpad {
         string symbol;
         uint256 supply;
         uint256 timestamp;
+        string imageURI;
     }
 
     TokenInfo[] public allTokens;
@@ -32,9 +33,10 @@ contract MemeLaunchpad {
         string memory symbol_,
         uint256 initialSupply,
         uint256 feeBasisPoints,
-        address feeCollector
+        address feeCollector,
+        string memory imageURI
     ) external returns (address token) {
-        MemeToken t = new MemeToken(name_, symbol_, initialSupply, msg.sender, feeBasisPoints, feeCollector);
+        MemeToken t = new MemeToken(name_, symbol_, initialSupply, msg.sender, feeBasisPoints, feeCollector, imageURI);
         token = address(t);
 
         allTokens.push(
@@ -44,7 +46,8 @@ contract MemeLaunchpad {
                 name: name_,
                 symbol: symbol_,
                 supply: initialSupply,
-                timestamp: block.timestamp
+                timestamp: block.timestamp,
+                imageURI: imageURI
             })
         );
 

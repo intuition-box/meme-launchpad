@@ -7,6 +7,7 @@ import { ArrowLeftIcon, RocketLaunchIcon, ExclamationTriangleIcon } from "@heroi
 import { Address, AddressInput } from "~~/components/scaffold-eth";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { parseEther } from "viem";
+import { uploadImageToIPFS, getIPFSUrl, validateImageFile } from "~~/services/pinata";
 
 const CreateTokenPage = () => {
   const { address: connectedAddress } = useAccount();
@@ -20,10 +21,14 @@ const CreateTokenPage = () => {
     initialSupply: "",
     feeBasisPoints: "100", // Default 1%
     feeCollector: "",
+    imageURI: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isCreating, setIsCreating] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -81,6 +86,41 @@ const CreateTokenPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      setErrors(prev => ({ ...prev, image: validation.error! }));
+      return;
+    }
+
+    setSelectedImage(file);
+    setErrors(prev => ({ ...prev, image: "" }));
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to IPFS
+    setIsUploadingImage(true);
+    try {
+      const result = await uploadImageToIPFS(file, `${formData.name || "token"}-image`);
+      const ipfsUrl = getIPFSUrl(result.IpfsHash);
+      setFormData(prev => ({ ...prev, imageURI: ipfsUrl }));
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+      setErrors(prev => ({ ...prev, image: "Failed to upload image to IPFS" }));
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -103,7 +143,8 @@ const CreateTokenPage = () => {
           formData.symbol,
           BigInt(formData.initialSupply),
           BigInt(formData.feeBasisPoints),
-          formData.feeCollector || connectedAddress
+          formData.feeCollector || connectedAddress,
+          formData.imageURI || ""
         ],
       });
 
@@ -116,7 +157,10 @@ const CreateTokenPage = () => {
         initialSupply: "",
         feeBasisPoints: "100",
         feeCollector: "",
+        imageURI: "",
       });
+      setSelectedImage(null);
+      setImagePreview("");
 
       alert("Token created successfully! Check the homepage to see your new token.");
       
@@ -271,6 +315,62 @@ const CreateTokenPage = () => {
                     <p className="text-red-400 text-sm mt-2 flex items-center gap-1">
                       <ExclamationTriangleIcon className="h-4 w-4" />
                       {errors.feeBasisPoints}
+                    </p>
+                  )}
+                </div>
+
+                {/* Token Image */}
+                <div>
+                  <label className="block text-lg font-semibold mb-3 text-white">
+                    Token Image (Optional)
+                  </label>
+                  
+                  {/* Image Preview */}
+                  {imagePreview && (
+                    <div className="mb-4">
+                      <img 
+                        src={imagePreview} 
+                        alt="Token preview" 
+                        className="w-32 h-32 object-cover rounded-xl border border-white/20"
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Upload Button */}
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label
+                      htmlFor="image-upload"
+                      className={`w-full px-4 py-3 bg-white/10 backdrop-blur-sm border rounded-xl text-white cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 ${
+                        errors.image ? 'border-red-500' : 'border-white/20 hover:border-white/30'
+                      } ${isUploadingImage ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isUploadingImage ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          Uploading to IPFS...
+                        </>
+                      ) : (
+                        <>
+                          📷 {selectedImage ? 'Change Image' : 'Upload Image'}
+                        </>
+                      )}
+                    </label>
+                  </div>
+                  
+                  <p className="text-gray-400 text-sm mt-2">
+                    Upload a token image (JPEG, PNG, GIF, WebP - max 10MB)
+                  </p>
+                  {errors.image && (
+                    <p className="text-red-400 text-sm mt-2 flex items-center gap-1">
+                      <ExclamationTriangleIcon className="h-4 w-4" />
+                      {errors.image}
                     </p>
                   )}
                 </div>

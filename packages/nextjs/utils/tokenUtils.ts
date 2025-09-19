@@ -7,6 +7,7 @@ export interface TokenInfo {
   symbol: string;
   supply: bigint;
   timestamp: bigint;
+  imageURI: string;
 }
 
 /**
@@ -61,7 +62,8 @@ export function processTokenData(tokenInfo: any): TokenInfo {
       name: tokenInfo[2] || "",
       symbol: tokenInfo[3] || "",
       supply: tokenInfo[4] || 0n,
-      timestamp: tokenInfo[5] || 0n
+      timestamp: tokenInfo[5] || 0n,
+      imageURI: tokenInfo[6] || ""
     };
   } else {
     // If it's already an object, use it directly

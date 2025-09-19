@@ -157,9 +157,10 @@ interface TokenCardProps {
   address: string;
   creator?: string;
   timestamp?: bigint;
+  imageURI?: string;
 }
 
-const TokenCard: React.FC<TokenCardProps> = ({ name, ticker, supply, saleState, address, creator, timestamp }) => {
+const TokenCard: React.FC<TokenCardProps> = ({ name, ticker, supply, saleState, address, creator, timestamp, imageURI }) => {
   const getStateColor = (state: string) => {
     switch (state) {
       case "Live": return "text-green-400 bg-green-400/20";
@@ -177,6 +178,23 @@ const TokenCard: React.FC<TokenCardProps> = ({ name, ticker, supply, saleState, 
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         
         <div className="relative z-10">
+          {/* Token Image */}
+          {imageURI && (
+            <div className="mb-6 flex justify-center">
+              <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-white/20">
+                <img 
+                  src={imageURI} 
+                  alt={`${name} token image`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback to a placeholder if image fails to load
+                    e.currentTarget.src = `https://via.placeholder.com/96x96/6366f1/ffffff?text=${encodeURIComponent(ticker)}`;
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Token Info */}
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-white mb-2">{name}</h3>
@@ -300,6 +318,7 @@ function AllTokensList() {
             address={tokenData.token || ""}
             creator={tokenData.creator}
             timestamp={tokenData.timestamp}
+            imageURI={tokenData.imageURI}
           />
         ))}
       </>
@@ -417,6 +436,7 @@ function TokenInfoCard({ tokenIndex }: { tokenIndex: number }) {
         address={tokenData.token || ""}
         creator={tokenData.creator}
         timestamp={tokenData.timestamp}
+        imageURI={tokenData.imageURI}
       />
     );
   } catch (error) {

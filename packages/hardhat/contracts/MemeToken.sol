@@ -12,11 +12,13 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 contract MemeToken is ERC20, ERC20Burnable, Ownable {
     uint256 public feeBasisPoints; // e.g. 100 = 1%
     address public feeCollector;
+    string public imageURI; // IPFS URI for token image
     mapping(address => bool) public isExcludedFromFee;
 
     event FeeUpdated(uint256 feeBasisPoints);
     event FeeCollectorUpdated(address feeCollector);
     event ExclusionSet(address account, bool excluded);
+    event ImageURIUpdated(string imageURI);
 
     constructor(
         string memory name_,
@@ -24,11 +26,13 @@ contract MemeToken is ERC20, ERC20Burnable, Ownable {
         uint256 initialSupply, // in whole tokens (18 decimals assumed)
         address initialOwner,
         uint256 initialFeeBasisPoints,
-        address initialFeeCollector
+        address initialFeeCollector,
+        string memory initialImageURI
     ) ERC20(name_, symbol_) Ownable(initialOwner) {
         _mint(initialOwner, initialSupply * (10 ** decimals()));
         feeBasisPoints = initialFeeBasisPoints;
         feeCollector = initialFeeCollector == address(0) ? initialOwner : initialFeeCollector;
+        imageURI = initialImageURI;
         isExcludedFromFee[initialOwner] = true;
         isExcludedFromFee[address(this)] = true;
     }
@@ -48,6 +52,11 @@ contract MemeToken is ERC20, ERC20Burnable, Ownable {
     function setExcludedFromFee(address account, bool excluded) external onlyOwner {
         isExcludedFromFee[account] = excluded;
         emit ExclusionSet(account, excluded);
+    }
+
+    function setImageURI(string memory _imageURI) external onlyOwner {
+        imageURI = _imageURI;
+        emit ImageURIUpdated(_imageURI);
     }
 
     /// @dev Override ERC20’s hook to apply fee logic

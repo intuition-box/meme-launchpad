@@ -20,15 +20,27 @@ const TokenDetailPage = () => {
   const [lockDays, setLockDays] = useState("30");
   const [isLocking, setIsLocking] = useState(false);
 
-  // For now, we'll use mock data since we need the MemeToken ABI
-  // In a real implementation, you'd need to include the MemeToken ABI
-  const tokenName = "Sample Token";
-  const tokenSymbol = "SAMPLE";
-  const totalSupply = BigInt("1000000000000000000000000000"); // 1B tokens
-  const userBalance = BigInt("0");
-  const owner = "0x0000000000000000000000000000000000000000";
-  const feeBasisPoints = BigInt("100"); // 1%
-  const feeCollector = "0x0000000000000000000000000000000000000000";
+  // Fetch token data from MemeLaunchpad contract
+  const { data: allTokens } = useScaffoldReadContract({
+    contractName: "MemeLaunchpad",
+    functionName: "getAllTokens",
+    args: [] as any[],
+  });
+
+  // Find the current token in the list
+  const currentTokenData = Array.isArray(allTokens) ? allTokens.find((token: any) => 
+    token.token?.toLowerCase() === tokenAddress?.toLowerCase()
+  ) : undefined;
+
+  // Use real data if available, otherwise fallback to mock data
+  const tokenName = currentTokenData?.name || "Sample Token";
+  const tokenSymbol = currentTokenData?.symbol || "SAMPLE";
+  const totalSupply = currentTokenData?.supply || BigInt("1000000000000000000000000000");
+  const userBalance = BigInt("0"); // Still mock for now
+  const owner = currentTokenData?.creator || "0x0000000000000000000000000000000000000000";
+  const feeBasisPoints = BigInt("100"); // Still mock for now
+  const feeCollector = "0x0000000000000000000000000000000000000000"; // Still mock for now
+  const imageURI = currentTokenData?.imageURI || "";
 
   // Contract write hook for transfers (using mock for now)
   const { writeContractAsync: writeTokenAsync } = useScaffoldWriteContract({
@@ -172,6 +184,23 @@ const TokenDetailPage = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 {/* Token Info */}
                 <div>
+                  {/* Token Image */}
+                  {imageURI && (
+                    <div className="mb-6 flex justify-center lg:justify-start">
+                      <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl">
+                        <img 
+                          src={imageURI} 
+                          alt={`${tokenName} token image`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Fallback to a placeholder if image fails to load
+                            e.currentTarget.src = `https://via.placeholder.com/128x128/6366f1/ffffff?text=${encodeURIComponent(tokenSymbol)}`;
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
                     {tokenName}
                   </h1>
